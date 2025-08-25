@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LangChain Tool Calling 总结</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: linear-gradient(135deg, #fff5f7, #e0f7ff);
+      color: #444;
+      line-height: 1.8;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.15);
+      border: 3px dashed #ffb6c1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 2.4em;
+      color: #ff6b9d;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #6a9fff;
+      margin: 25px 0 15px 0;
+      font-size: 1.6em;
+      border-bottom: 3px solid #ffd1dc;
+      padding-bottom: 8px;
+      display: inline-block;
+    }
+    p {
+      margin: 12px 0;
+      font-size: 1.1em;
+    }
+    ul {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+    li {
+      margin: 10px 0;
+      color: #555;
+    }
+    .highlight {
+      background: #fffacd;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: bold;
+      color: #d9534f;
+    }
+    .icon {
+      color: #ff6b9d;
+      margin-right: 8px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+    .decoration {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0.6;
+    }
+    .top-left { top: 20px; left: 20px; }
+    .top-right { top: 20px; right: 20px; }
+    .bottom-left { bottom: 30px; left: 30px; }
+    .bottom-right { bottom: 30px; right: 30px; }
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      h1 { font-size: 2em; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 可爱装饰小图标 -->
+  <div class="decoration top-left"><i class="fas fa-robot"></i></div>
+  <div class="decoration top-right"><i class="fas fa-microchip"></i></div>
+  <div class="decoration bottom-left"><i class="fas fa-code"></i></div>
+  <div class="decoration bottom-right"><i class="fas fa-heart"></i></div>
+
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-rocket"></i> LangChain Tool Calling 总结</h1>
+      <p>✨ 从语言模型到智能体的萌系跃迁 ✨</p>
+    </header>
+
+    <h2><i class="fas fa-star icon"></i>一、核心价值：从语言生成到主动执行</h2>
+    <p>Tool Calling 让大语言模型（LLM）不再只是“背书小能手”，而是变成会动手的“小助手”！通过调用外部工具执行实时操作，它能：</p>
+    <ul>
+      <li><strong>动态能力扩展</strong>：需要算数学？调用计算器！需要查天气？调用API！不再依赖“死记硬背”～</li>
+      <li><strong>结构化交互</strong>：输出规范的 JSON 参数，让系统“听得懂”，执行更精准！</li>
+      <li><strong>任务自动化</strong>：实现“思考→调用→执行→反馈”的多轮小循环，比如：“查天气 → 写报告 → 发邮件”全自动完成！</li>
+      <li><strong>降低幻觉风险</strong>：与其瞎猜，不如调用 <span class="highlight">get_weather</span>，真实又可靠！</li>
+    </ul>
+
+    <h2><i class="fas fa-cogs icon"></i>二、核心机制：四步工作流</h2>
+    <ol>
+      <li>
+        <strong>工具定义（Tool Creation）</strong>
+        <p>用 <span class="highlight">@tool</span> 装饰器把 Python 函数变成“小工具”，自动生成名字、描述和参数格式，超方便！</p>
+      </li>
+      <li>
+        <strong>工具绑定（Tool Binding）</strong>
+        <p>把工具“悄悄告诉”模型（通过 Prompt 注入），就像给它一个工具箱，但它不会记住哦～</p>
+        <p>用 <span class="highlight">.bind_tools()</span> 动态绑定，不同任务配不同工具包！</p>
+      </li>
+      <li>
+        <strong>工具调用（Tool Calling）</strong>
+        <p>模型返回 <span class="highlight">ToolCall</span> 对象（name, args, id），支持多个工具一起用！</p>
+        <p>关键靠 <span class="highlight">id</span> 字段，让每一步调用都连得上～</p>
+      </li>
+      <li>
+        <strong>工具执行与反馈</strong>
+        <p>程序执行工具后，返回 <span class="highlight">ToolMessage</span>，记得带上 <span class="highlight">tool_call_id</span> 匹配哦！</p>
+      </li>
+    </ol>
+
+    <h2><i class="fas fa-bolt icon"></i>三、高级特性与工程实践</h2>
+    <ul>
+      <li>
+        <strong>流式调用（Streaming Tool Calls）</strong>
+        <p>用 <span class="highlight">astream()</span> 一点点吐出调用信息，UI 可以实时显示“正在调用中…”</p>
+        <p>适合生成复杂 SQL 或 JSON，边生成边解析，用户感觉更快啦～</p>
+      </li>
+      <li>
+        <strong>错误处理与鲁棒性</strong>
+        <p>内置 <span class="highlight">ToolException</span>，还能自定义降级策略，不怕工具出错！</p>
+      </li>
+      <li>
+        <strong>安全合规</strong>
+        <p>设置白名单，只让模型调用“授权工具”，防止它乱来～</p>
+        <p>所有调用都记日志，审计超安心！</p>
+      </li>
+    </ul>
+
+    <h2><i class="fas fa-rocket icon"></i>四、总结：LLM向智能体演进的核心跃迁</h2>
+    <p>Tool Calling 不只是加个功能，它是 LLM 从“聊天机器人”变成“智能小助手”的关键一步！</p>
+    <ul>
+      <li><strong>能力升维</strong>：会看（感知）、会想（决策）、会做（执行），闭环啦！</li>
+      <li><strong>生态基石</strong>：多个 Agent 协作（比如产品Agent → 计算Agent → 报告Agent），任务自动流转！</li>
+      <li><strong>未来路径</strong>：结合流式、记忆、安全控制，让 AI 真正成为你的协作者～</li>
+    </ul>
+  </div>
+
+</body>
+</html>
