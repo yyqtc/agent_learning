@@ -3,9 +3,19 @@ import json
 import inspect
 from openai import OpenAI
 from functools import wraps
+import logging
 
 from typing import Dict, Any, Callable, List, Optional
 from typing import get_type_hints, get_origin, get_args
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 class Agent:
     def __init__(self):
@@ -53,12 +63,15 @@ class Agent:
                 required.append(name)
 
         schema = {
-            "name": func.__name__,
-            "description": (func.__doc__ or "").strip(),
-            "parameters": {
-                "type": "object",
-                "properties": properties,
-                "required": required
+            "type": "function",
+            "function": {
+                "name": func.__name__,
+                "description": (func.__doc__ or "").strip(),
+                "parameters": {
+                    "type": "object",
+                    "properties": properties,
+                    "required": required
+                }
             }
         }
 
@@ -84,7 +97,7 @@ class Agent:
         )
         return completion.model_dump_json()
     
-    def generate_reply(self, thought: str, observation: str) -> str:
+    def generate_reply(self, thought: str, observation: str) -> Dict[str, Any]:
         self.messages.append({
             "role": "assistant", 
             "content": f'大模型的选择是：{thought}，工具执行结果是：{observation}，请隐藏思考过程，直接输出最终答案'
@@ -98,22 +111,42 @@ class Agent:
             messages=self.messages
         )
         response = json.loads(completion.model_dump_json())
-        if len(response.get("choices")) > 0 and
-            response.get("choices")[0].get("message", {}).get("content"):
-            return response.get("choices")[0].get("message", {}).get("content")
+        if len(response.get("choices")) > 0:
+            if response.get("choices")[0].get("finish_reason") == "tool_calls":
+                return {
+                    "status": "tool_calls",
+                    "result": completion.model_dump_json()
+                }
+            elif response.get("choices")[0].get("finish_reason") == "stop":
+                if response.get("choices")[0].get("message", {}).get("content"):
+                    return {
+                        "status": "final_reply",
+                        "result": response.get("choices")[0].get("message", {}).get("content")
+                    }
+                else:
+                    return {"result": "Agent 未能生成有效的回复。", "status": "fail"}
+
+            else:
+                return {"result": "Agent 未能生成有效的回复。", "status": "fail"}
+
         else:
-            return "Agent 未能生成有效的回复。"
+            return {"result": "Agent 未能生成有效的回复。", "status": "fail"}
     
     def parse_action(self, llm_response: str) -> Optional[Dict[str, Any]]:
-        response = json.loads(llm_response)
-        if len(response.get("choices")) > 0 and
-            response.get("choices")[0].get("message", {}).get("tool_calls"):
-            action_wrapper = {
-                "actions":response.get("choices")[0].get("message", {}).get("tool_calls"),
-                "thought": response.get("choices")[0].get("finish_reason")
-            }
-            return action_wrapper
-        else:
+        try:
+            print(llm_response)
+            response = json.loads(llm_response)
+            if (len(response.get("choices")) > 0 and
+                response.get("choices")[0].get("message", {}).get("tool_calls")):
+                action_wrapper = {
+                    "actions":response.get("choices")[0].get("message", {}).get("tool_calls"),
+                    "thought": response.get("choices")[0].get("finish_reason")
+                }
+                return action_wrapper
+            else:
+                return None
+        except Exception as e:
+            logger.error(f"解析大模型response失败{e}", )
             return None
     
     def execute_action(self, action: Dict[str, Any]) -> str:
@@ -129,3 +162,47 @@ class Agent:
                     try:
                         result[name] = {
                             "status": "success",
+                            "result": tool_func(**args)
+                        }
+                        break
+                    except Exception as e:
+                        logger.error(f"工具 {name} 第 {attempt} 次执行失败: {str(e)}")
+
+            except Exception as e:
+                logger.error(f"执行动作的过程中发生了以下问题{e}")
+                result[name] = {
+                    "status": "fail",
+                    "result": e
+                }
+
+        return json.dumps(result)
+
+    def run(self, user_input: str):
+        logger.info(f"用户输入：{user_input}")
+
+        self.messages.append({"role": "user", "content": user_input})
+
+        llm_response = self.llm_response(user_input)
+        action = self.parse_action(llm_response)
+        if not action:
+            logger.info("Agent 未能生成有效的 Action。")
+            return "Agent 未能生成有效的回复。"
+
+        while True:
+            thought = action["thought"]
+            logger.info(f"🧠 推理过程 (Thought): {thought}")
+            observation = self.execute_action(action)
+            logger.info(f"👀 执行反馈 (Observation): {observation}")
+            response = self.generate_reply(thought, observation)
+            if response["status"] == "tool_calls":
+                action = self.parse_action(response["result"])
+            elif response["status"] == "final_reply":
+                self.resume_beggining_messages()
+                logger.info(f"💬 最终回复: {response['result']}")
+                return response["result"]
+            else:
+                self.resume_beggining_messages()
+                logger.info("💬 最终回复: Agent 未能生成有效的回复。")
+                return "Agent 未能生成有效的回复。"
+
+

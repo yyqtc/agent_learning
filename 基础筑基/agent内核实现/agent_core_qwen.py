@@ -87,7 +87,6 @@ class Agent:
             messages=self.messages,
             tools=self.tool_schemas
         )
-
         return completion.model_dump_json()
 
     def _qwen_generate_reply(self, thought: str, observation: str) -> str:
@@ -101,7 +100,6 @@ class Agent:
             model="qwen-plus",
             messages=self.messages
         )
-
         response = json.loads(completion.model_dump_json())
         return response.get("choices")[0].get("message", {}).get("content")
 
