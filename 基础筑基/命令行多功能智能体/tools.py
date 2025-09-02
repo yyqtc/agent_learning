@@ -45,8 +45,4 @@ def get_city_weather(city: str) -> str:
    weather_res = response.json()
    return weather_res
 
-
-
-if __name__ == "__main__":
-   print(get_city_weather("成都"))
    

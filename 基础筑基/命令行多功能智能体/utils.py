@@ -70,6 +70,3 @@ def init_jwt_token() -> str:
     token = jwt.encode(payload, private_key, algorithm="EdDSA", headers=headers)
     return token
 
-
-if __name__ == "__main__":
-    print(init_jwt_token())
