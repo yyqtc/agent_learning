@@ -29,14 +29,24 @@ def get_city_weather(city: str) -> str:
    """获取城市天气"""
    import json
    import requests
+   from utils import init_jwt_token
    
    config = json.load(open("config.json", "r"))
-   api_key = config["QWeather-API-KEY"]
    api_base = config["QWeather-API-BASE"]
    
    location_url = f"{api_base}/geo/v2/city/lookup?location={city}"
+   response = requests.get(location_url, headers={"Authorization": f'Bearer {init_jwt_token()}'})
+   location_res = response.json()
+   lat = round(float(location_res.get("location")[0].get("lat")), 2)
+   lon = round(float(location_res.get("location")[0].get("lon")), 2)
+   location = f"{lon},{lat}"
+   weather_url = f"{api_base}/v7/minutely/5m?location={location}"
+   response = requests.get(weather_url, headers={"Authorization": f'Bearer {init_jwt_token()}'})
+   weather_res = response.json()
+   return weather_res
 
-   weather_url = f"{api_base}/v7/weather/3d"
-   response = requests.get(url, headers={"Authorization": f'Bearer {api_key}'})
-   return response.json()
+
+
+if __name__ == "__main__":
+   print(get_city_weather("成都"))
    

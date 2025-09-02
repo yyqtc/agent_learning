@@ -134,7 +134,6 @@ class Agent:
     
     def parse_action(self, llm_response: str) -> Optional[Dict[str, Any]]:
         try:
-            print(llm_response)
             response = json.loads(llm_response)
             if (len(response.get("choices")) > 0 and
                 response.get("choices")[0].get("message", {}).get("tool_calls")):
@@ -190,9 +189,9 @@ class Agent:
 
         while True:
             thought = action["thought"]
-            logger.info(f"🧠 推理过程 (Thought): {thought}")
+            logger.info(f"🧠 推理过程 (Thought): {thought[0:100]}...")
             observation = self.execute_action(action)
-            logger.info(f"👀 执行反馈 (Observation): {observation}")
+            logger.info(f"👀 执行反馈 (Observation): {observation[0:100]}...")
             response = self.generate_reply(thought, observation)
             if response["status"] == "tool_calls":
                 action = self.parse_action(response["result"])

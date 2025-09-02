@@ -1,9 +1,8 @@
-import os
-from cryptography.hazmat.primitives.asymmetric import ed25519
-from cryptography.hazmat.primitives import serialization
-
-
 def generate_ed25519_keypair():
+    from cryptography.hazmat.primitives.asymmetric import ed25519
+    from cryptography.hazmat.primitives import serialization
+    import os
+    
     """生成Ed25519私钥和公钥对"""
     # 生成私钥
     private_key = ed25519.Ed25519PrivateKey.generate()
@@ -48,17 +47,29 @@ def init_jwt_token() -> str:
     """使用Ed25519算法进行签名"""
     import jwt
     import time
+    import json
     import sys
 
-    private_key = ""
+    with open("private_key.pem", "r") as f:
+        private_key = f.read()
+
+    config = json.load(open("config.json", "r"))
+    project_id = config["QWeather-PROJECT-ID"]
+    key_id = config["QWeather-KEY-ID"]
 
     payload  = {
         'iat': int(time.time()) - 30,
         'exp': int(time.time()) + 900,
+        "sub": project_id
     }
+
+    headers = {
+        "kid": key_id
+    }
+
+    token = jwt.encode(payload, private_key, algorithm="EdDSA", headers=headers)
+    return token
 
 
 if __name__ == "__main__":
-    private_key, public_key = generate_ed25519_keypair()
-    print(private_key)
-    print(public_key)
+    print(init_jwt_token())
