@@ -1,4 +1,7 @@
 {
-    "QWen-API-KEY": "your-api-key",
-    "QWen-API-BASE": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    "QWen-API-KEY": "your-qwen-api-key",
+    "QWen-API-BASE": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "QWeather-API-BASE": "your-qweather-api-base",
+    "QWeather-PROJECT-ID": "your-qweather-project-id",
+    "QWeather-KEY-ID": "your-qweather-key-id"
 }

@@ -189,19 +189,19 @@ class Agent:
 
         while True:
             thought = action["thought"]
-            logger.info(f"🧠 推理过程 (Thought): {thought[0:100]}...")
+            logger.info(f"推理过程 (Thought): {thought[0:100]}...")
             observation = self.execute_action(action)
-            logger.info(f"👀 执行反馈 (Observation): {observation[0:100]}...")
+            logger.info(f"执行反馈 (Observation): {observation[0:100]}...")
             response = self.generate_reply(thought, observation)
             if response["status"] == "tool_calls":
                 action = self.parse_action(response["result"])
             elif response["status"] == "final_reply":
                 self.resume_beggining_messages()
-                logger.info(f"💬 最终回复: {response['result']}")
+                logger.info(f"最终回复: {response['result']}")
                 return response["result"]
             else:
                 self.resume_beggining_messages()
-                logger.info("💬 最终回复: Agent 未能生成有效的回复。")
+                logger.info("最终回复: Agent 未能生成有效的回复。")
                 return "Agent 未能生成有效的回复。"
 
 
