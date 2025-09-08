@@ -10,6 +10,7 @@ os.environ["LANGCHAIN_API_KEY"] = config["LANGCHAIN_API_KEY"]
 
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 llm = ChatOpenAI(
     model="deepseek-chat",
@@ -23,12 +24,14 @@ prompt = ChatPromptTemplate.from_template(
     "你是一个英语翻译专家，请将以下内容翻译成中文：{input}"
 )
 
-chain = prompt | llm
+parser = StrOutputParser()
 
-response = chain.invoke({
+chain = prompt | llm | parser
+
+result = chain.invoke({
     "role": "user",
     "style": "专业、简洁、准确",
     "input": "You are the silence I've been waiting for"
 })
 
-print(response.content)
+print(result)
