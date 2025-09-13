@@ -13,6 +13,7 @@ llm = ChatOpenAI(
 )
 
 parser = StrOutputParser()
+
 chain = llm | parser
 
 from langserve import add_routes

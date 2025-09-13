@@ -1,4 +1,5 @@
 {
     "LANGCHAIN_API_KEY": "your-langchain-key",
-    "DEEPSEEK_API_KEY": "your-deepseek-key"
+    "DEEPSEEK_API_KEY": "your-deepseek-key",
+    "SESSION_ID": "your-session-id"
 }
