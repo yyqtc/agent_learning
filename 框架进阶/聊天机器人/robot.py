@@ -1,4 +1,5 @@
 from langchain_openai import ChatOpenAI
+from langchain_core.messages import BaseMessage
 from langchain_core.output_parsers import StrOutputParser
 import json
 
@@ -13,6 +14,8 @@ llm = ChatOpenAI(
 )
 
 parser = StrOutputParser()
+
+from langchain_core.runnables import RunnableLambda
 
 chain = llm | parser
 
