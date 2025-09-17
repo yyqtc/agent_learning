@@ -21,18 +21,11 @@ def run_in_manual_mode():
 
 def run_in_auto_mode():
     import json
+    import time
 
     config = json.load(open('./config.json', 'r'))
     
-    from langchain_openai import ChatOpenAI
-    from langchain_core.runnables import RunnablePassthrough, RunnableLambda
-
-    model = ChatOpenAI(
-        model="deepseek-chat",
-        openai_api_key=config["DEEPSEEK_API_KEY"],
-        openai_api_base="https://api.deepseek.com"
-    )
-    
+    from langchain_core.runnables import RunnableLambda
     from langchain_core.runnables.history import RunnableWithMessageHistory
     from langchain_core.chat_history import BaseChatMessageHistory, InMemoryChatMessageHistory
     from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage, trim_messages
@@ -99,11 +92,11 @@ def run_in_auto_mode():
         for r in remote_chain.stream(
             [HumanMessage(content=f"{user_input}")],
             config={"configurable": {"session_id": config["SESSION_ID"]}}
-        ):
+        ):  
             print(r, end='')
             response += r
         
-        print("\n\n================response end================\n\n")
+        print("\n\n================ response end ================\n\n")
         store[config["SESSION_ID"]].add_messages([AIMessage(content=response)])
 
 
