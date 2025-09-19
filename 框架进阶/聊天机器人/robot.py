@@ -9,8 +9,7 @@ llm = ChatOpenAI(
     model="deepseek-chat",
     openai_api_key=config["DEEPSEEK_API_KEY"],
     openai_api_base="https://api.deepseek.com",
-    temperature=0.7,
-    max_tokens=2000
+    temperature=0.7
 )
 
 parser = StrOutputParser()
