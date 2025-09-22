@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧酒店包 - 信息填写</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            overflow-x: hidden;
+        }
+
+        .page-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 375px;
+            background: white;
+            min-height: 80vh;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            overflow-x: hidden;
+        }
+
+        .page-container.show {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateX(-50%) translateY(100%); 
+            }
+            to { 
+                transform: translateX(-50%) translateY(0); 
+            }
+        }
+
+        /* 页面头部 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .back-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .back-btn::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-left: 2px solid #333;
+            border-bottom: 2px solid #333;
+            transform: rotate(45deg);
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover::before {
+            border-color: #666;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+            text-align: center;
+            margin: 0 20px;
+        }
+
+        /* 页面内容 */
+        .page-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* 表单行 */
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            min-width: 50px;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .detail-inputs .form-label {
+            min-width: 60px;
+            margin-right: 8px;
+        }
+
+        .required {
+            color: #ff4757;
+        }
+
+        .form-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3c7bfd;
+            background-color: white;
+        }
+
+        .form-input-half {
+            flex: 1;
+            height: 40px;
+            padding: 0 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+            margin-left: 2px;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .form-input-half:focus {
+            outline: none;
+            border-color: #3c7bfd;
+            background-color: white;
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3c7bfd;
+            background-color: white;
+        }
+
+        /* 安装地址特殊布局 */
+        .address-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .address-row .back-btn {
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .address-inputs {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .address-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .address-input:focus {
+            outline: none;
+            border-color: #3c7bfd;
+            background-color: white;
+        }
+
+        .location-icon {
+            color: #ff6b6b;
+            font-size: 16px;
+            margin-left: 4px;
+        }
+
+        /* 详细地址特殊布局 */
+        .detail-address-row {
+            margin-bottom: 20px;
+        }
+
+        .detail-inputs {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .detail-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .detail-input:focus {
+            outline: none;
+            border-color: #3c7bfd;
+            background-color: white;
+        }
+
+        .separator {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .form-hints {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+            color: #999;
+            flex-wrap: nowrap;
+            min-width: 0;
+            margin-top: 4px;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #666;
+            padding: 3px 8px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .hint::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid #dee2e6;
+        }
+
+        .hint::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid #f8f9fa;
+        }
+
+        /* 产品信息区域 */
+        .product-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .product-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .product-image {
+            flex-shrink: 0;
+        }
+
+        .product-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .current-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e74c3c;
+        }
+
+        .packet-type {
+            font-size: 14px;
+            color: #666;
+            margin-left: 8px;
+        }
+
+        .spec-section {
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .spec-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .spec-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .spec-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 底部按钮 */
+        .page-footer {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            background: white;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .price-display {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 12px;
+            min-width: 0;
+        }
+
+        .total-price {
+            font-size: 18px;
+            color: #e74c3c;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-submit {
+            flex: 2;
+            height: 40px;
+            background: linear-gradient(135deg, #3c7bfd 0%, #5a8cff 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 0;
+            flex-shrink: 0;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* 提交成功弹窗容器 */
+        .success-modal-container {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 9999 !important;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .success-modal-container.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .success-modal-container iframe {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 375px) {
+            .page-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+
+        <!-- 页面内容 -->
+        <div class="page-body">
+            <!-- 安装地址 -->
+            <div class="address-row">
+                <button class="back-btn" onclick="closeModal()"></button>
+                <label class="form-label">安装地址 <span class="required">*</span></label>
+                <div class="address-inputs">
+                    <input type="text" class="address-input" value="广州" readonly>
+                    <input type="text" class="address-input" placeholder="请选择具体楼宇" value="测试楼宇">
+                    <span class="location-icon">📍</span>
+                </div>
+            </div>
+
+            <!-- 详细地址 -->
+            <div class="detail-address-row">
+                <div class="detail-inputs">
+                    <label class="form-label">详细地址 <span class="required">*</span></label>
+                    <div class="input-group">
+                        <input type="text" class="detail-input" value="6栋">
+                        <span class="hint">请选择具体楼宇</span>
+                    </div>
+                    <span class="separator">-</span>
+                    <div class="input-group">
+                        <input type="text" class="detail-input" value="601">
+                        <span class="hint">请填写楼层/门牌号</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 姓名和电话 -->
+            <div class="form-row">
+                <label class="form-label">姓名 <span class="required">*</span></label>
+                <input type="text" class="form-input-half" placeholder="请输入姓名" value="测试用户">
+                <label class="form-label">电话 <span class="required">*</span></label>
+                <input type="tel" class="form-input-half" value="138028822">
+            </div>
+
+            <!-- 备注 -->
+            <div class="form-row">
+                <label class="form-label">备注</label>
+                <textarea class="form-textarea" placeholder="请输入备注信息 (可选)"></textarea>
+            </div>
+
+            <!-- 产品信息 -->
+            <div class="product-info">
+                <div class="product-header">
+                    <div class="product-image">
+                        <img src="banner.jpg" alt="智慧酒店包" class="product-img">
+                    </div>
+                    <div class="product-details">
+                        <div class="product-name" id="productName">智慧酒店包</div>
+                        <div class="product-price">
+                            <span class="current-price">¥40</span>
+                            <span class="packet-type">月包</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="spec-section">
+                    <div class="section-title">已选规格</div>
+                    <div class="spec-items">
+                        <div class="spec-item">
+                            <span class="spec-label">套餐类型</span>
+                            <span class="spec-value">月包</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">带宽</span>
+                            <span class="spec-value">100M</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">电视</span>
+                            <span class="spec-value">商务电视IPTV</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">屏幕定制</span>
+                            <span class="spec-value">屏幕定制标准版</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部按钮 -->
+        <div class="page-footer">
+            <div class="price-display">
+                <span class="total-price">¥40月套餐</span>
+            </div>
+            <button class="btn-submit" onclick="submitForm()">提交预约</button>
+        </div>
+    </div>
+
+    <!-- 提交成功弹窗容器 -->
+    <div class="success-modal-container" id="successModalContainer">
+        <!-- iframe将在这里动态加载提交成功弹窗页面 -->
+    </div>
+
+    <script>
+        // 关闭弹窗
+        function closeModal() {
+            console.log('关闭弹窗');
+            
+            // 通知父窗口关闭弹窗
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'closeInfoForm' }, '*');
+            } else {
+                // 添加关闭动画
+                const container = document.querySelector('.page-container');
+                container.classList.remove('show');
+                container.style.animation = 'slideDown 0.3s ease-in forwards';
+                
+                setTimeout(() => {
+                    window.close();
+                }, 300);
+            }
+        }
+
+        // 添加关闭动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { 
+                    transform: translateX(-50%) translateY(0); 
+                }
+                to { 
+                    transform: translateX(-50%) translateY(100%); 
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 提交表单
+        function submitForm() {
+            console.log('=== 点击提交预约按钮 ===');
+            console.log('准备显示提交成功弹窗');
+            
+            // 显示提交成功弹窗
+            showSuccessModal();
+        }
+
+        // 显示提交成功弹窗
+        function showSuccessModal() {
+            console.log('显示提交成功弹窗');
+            
+            // 创建iframe来加载提交成功弹窗页面
+            const container = document.getElementById('successModalContainer');
+            const iframe = document.createElement('iframe');
+            iframe.src = '智慧酒店包提交成功弹窗.html';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            
+            // 清空现有内容并添加iframe
+            container.innerHTML = '';
+            container.appendChild(iframe);
+            
+            // 显示弹窗
+            container.classList.add('show');
+            
+            // 监听iframe加载完成
+            iframe.onload = function() {
+                console.log('提交成功弹窗页面已加载');
+            };
+            
+            console.log('提交成功弹窗已显示');
+        }
+
+        // 关闭提交成功弹窗
+        function closeSuccessModal() {
+            console.log('关闭提交成功弹窗');
+            
+            const container = document.getElementById('successModalContainer');
+            container.classList.remove('show');
+            
+            // 延迟关闭整个页面
+            setTimeout(() => {
+                if (window.parent !== window) {
+                    window.parent.postMessage({ type: 'closeSuccessModal' }, '*');
+                } else {
+                    window.close();
+                }
+            }, 300);
+        }
+
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== 智慧酒店包信息填写页面已加载 ===');
+            console.log('窗口尺寸:', window.innerWidth, 'x', window.innerHeight);
+            console.log('页面容器:', document.querySelector('.page-container'));
+            
+            // 检查成功弹窗容器是否存在
+            const successModalContainer = document.getElementById('successModalContainer');
+            console.log('成功弹窗容器:', successModalContainer);
+            if (successModalContainer) {
+                console.log('成功弹窗容器存在，当前类名:', successModalContainer.className);
+            } else {
+                console.error('成功弹窗容器不存在！');
+            }
+            
+            // 监听来自父窗口的消息
+            window.addEventListener('message', function(event) {
+                console.log('=== 接收到父窗口消息 ===');
+                console.log('消息来源:', event.origin);
+                console.log('消息数据:', event.data);
+                console.log('消息类型:', event.data?.type);
+                
+                if (event.data && event.data.type === 'updateSelection') {
+                    console.log('开始处理updateSelection消息');
+                    console.log('原始数据:', event.data.data);
+                    
+                    try {
+                        const decodedData = decodeURIComponent(event.data.data);
+                        console.log('解码后的数据:', decodedData);
+                        
+                        const selectionData = JSON.parse(decodedData);
+                        console.log('解析后的选择数据:', selectionData);
+                        updateProductInfo(selectionData);
+                    } catch (error) {
+                        console.error('解析选择数据失败:', error);
+                        console.error('错误详情:', error.message);
+                    }
+                } else {
+                    console.log('消息类型不匹配或数据格式错误');
+                }
+            });
+            
+            // 获取URL参数中的选择数据（兼容直接访问的情况）
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataParam = urlParams.get('data');
+            
+            if (dataParam) {
+                try {
+                    const selectionData = JSON.parse(decodeURIComponent(dataParam));
+                    console.log('接收到URL参数选择数据:', selectionData);
+                    updateProductInfo(selectionData);
+                } catch (error) {
+                    console.error('解析URL参数选择数据失败:', error);
+                }
+            } else {
+                console.log('未接收到选择数据，使用默认值');
+            }
+        });
+
+        // 更新产品信息显示
+        function updateProductInfo(selectionData) {
+            console.log('=== 开始更新产品信息 ===');
+            console.log('接收到的选择数据:', selectionData);
+            console.log('数据类型:', typeof selectionData);
+            console.log('数据内容:', JSON.stringify(selectionData, null, 2));
+            
+            const packetTypeText = selectionData.packetType === 'month' ? '月包' : '年包';
+            const currentPrice = selectionData.packetType === 'month' ? 
+                selectionData.price : 
+                selectionData.price * 10;
+            
+            console.log('计算出的套餐类型:', packetTypeText);
+            console.log('计算出的价格:', currentPrice);
+            
+            // 更新产品名称显示
+            const productNameElement = document.getElementById('productName');
+            console.log('产品名称元素:', productNameElement);
+            if (productNameElement) {
+                const newName = `智慧酒店包${currentPrice}元${packetTypeText}`;
+                console.log('设置产品名称为:', newName);
+                productNameElement.textContent = newName;
+            } else {
+                console.error('未找到产品名称元素!');
+            }
+            
+            // 更新产品价格显示
+            const priceElement = document.querySelector('.current-price');
+            if (priceElement) {
+                priceElement.textContent = `¥${currentPrice}`;
+            }
+            
+            // 更新套餐类型显示
+            const packetTypeElement = document.querySelector('.packet-type');
+            if (packetTypeElement) {
+                packetTypeElement.textContent = packetTypeText;
+            }
+            
+            // 更新底部总价显示
+            const totalPriceElement = document.querySelector('.total-price');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `¥${currentPrice}${packetTypeText}`;
+            }
+            
+            // 更新规格详情
+            const specElements = {
+                'selectedPacketType': packetTypeText,
+                'selectedBandwidth': selectionData.bandwidth,
+                'selectedTV': selectionData.tv,
+                'selectedScreen': selectionData.screen
+            };
+            
+            Object.keys(specElements).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = specElements[id];
+                }
+            });
+            
+            console.log('产品信息更新完成');
+        }
+
+        // 页面完全加载后
+        window.addEventListener('load', function() {
+            console.log('=== 页面完全加载完成 ===');
+            const container = document.querySelector('.page-container');
+            if (container) {
+                console.log('容器元素存在，开始动画');
+                // 延迟一点时间确保页面完全渲染
+                setTimeout(() => {
+                    container.classList.add('show');
+                    console.log('动画类已添加');
+                }, 100);
+            } else {
+                console.error('容器元素不存在！');
+            }
+        });
+    </script>
+</body>
+</html>

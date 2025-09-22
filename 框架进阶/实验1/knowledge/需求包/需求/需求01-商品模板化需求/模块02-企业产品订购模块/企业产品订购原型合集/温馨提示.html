@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>温馨提示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .page-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background-color: #fff;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            height: 44px;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 导航栏 */
+        .nav-bar {
+            height: 44px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* 内容区域 */
+        .content-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 上半部分 - 文字提示 */
+        .warning-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+
+        .warning-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .warning-desc {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .warning-highlight {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e74c3c;
+            margin: 20px 0;
+        }
+
+        /* 中部 - 承诺书内容 */
+        .agreement-section {
+            flex: 1;
+            margin-bottom: 30px;
+        }
+
+
+        .agreement-content {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .agreement-content h3 {
+            color: #e74c3c;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .agreement-content p {
+            margin-bottom: 10px;
+            text-indent: 2em;
+        }
+
+        .agreement-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .agreement-content li {
+            margin-bottom: 5px;
+        }
+
+        /* 勾选区域 */
+        .checkbox-section {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background-color: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .custom-checkbox.checked {
+            background-color: #007AFF;
+            border-color: #007AFF;
+        }
+
+        .custom-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .checkbox-text {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .checkbox-text a {
+            color: #007AFF;
+            text-decoration: none;
+        }
+
+        .checkbox-text a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* 底部按钮 */
+        .footer {
+            padding: 20px;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            height: 50px;
+            background-color: #ccc;
+            color: #999;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm.enabled {
+            background: linear-gradient(135deg, #007AFF 0%, #5a8cff 100%);
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-confirm.enabled:hover {
+            background: linear-gradient(135deg, #0056CC 0%, #4a7cff 100%);
+        }
+
+        .btn-confirm.enabled:active {
+            transform: scale(0.98);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 375px) {
+            .page-container {
+                max-width: 100%;
+            }
+        }
+
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span>21:11</span>
+            </div>
+            <div class="status-right">
+                <span>📶</span>
+                <span>5G</span>
+                <span>🔋90%</span>
+            </div>
+        </div>
+
+        <!-- 导航栏 -->
+        <div class="nav-bar">
+            <div class="nav-left">
+                <span>←</span>
+                <span>×</span>
+            </div>
+            <div class="nav-title">温馨提示</div>
+            <div></div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content-container">
+            <!-- 上半部分 - 文字提示 -->
+            <div class="warning-section">
+                <div class="warning-title">温馨提示</div>
+                <div class="warning-desc">1、您好！您已完成商品选购，即将签约。按相关规定需上传<span style="color: #e74c3c; font-weight: 600;">身份证等资料</span>，建议提前准备<span style="color: #e74c3c; font-weight: 600;">清晰证件照</span>，以便高效办理，感谢配合！</div>
+                <div class="warning-desc">2、为了保障您的合法权益，<span style="color: #e74c3c; font-weight: 600;">防范电信网络诈骗，</span>请您仔细阅读并同意以下承诺书，<span style="color: #e74c3c; font-weight: 600;">请务必认真阅读20秒以上</span></div>
+            </div>
+
+            <!-- 中部 - 承诺书内容 -->
+            <div class="agreement-section">
+                <div class="agreement-content">
+                    <h3>一、基本承诺</h3>
+                    <p>本人承诺严格遵守国家相关法律法规，自觉<span style="color: #e74c3c; font-weight: 600;">防范电信网络诈骗</span>，保护个人和他人财产安全。</p>
+                    
+                    <h3>二、防范措施</h3>
+                    <ul>
+                        <li>不轻信<span style="color: #e74c3c; font-weight: 600;">陌生电话、短信、微信</span>等通讯工具</li>
+                        <li>不向陌生人透露<span style="color: #e74c3c; font-weight: 600;">个人身份信息、银行账户信息</span></li>
+                        <li>不点击<span style="color: #e74c3c; font-weight: 600;">不明链接</span>，不下载可疑软件</li>
+                        <li>不参与任何形式的<span style="color: #e74c3c; font-weight: 600;">网络刷单、投资理财诈骗</span></li>
+                        <li>遇到可疑情况及时向<span style="color: #e74c3c; font-weight: 600;">公安机关举报</span></li>
+                    </ul>
+                    
+                    <h3>三、责任声明</h3>
+                    <p>本人明确知晓<span style="color: #e74c3c; font-weight: 600;">电信网络诈骗的危害性</span>，承诺积极配合相关部门开展防范宣传工作，如因个人疏忽导致财产损失，由本人承担相应责任。</p>
+                    
+                    <h3>四、其他条款</h3>
+                    <p>本承诺书自签署之日起生效，本人将严格遵守以上承诺，共同维护良好的网络环境。</p>
+                </div>
+
+                <!-- 勾选区域 -->
+                <div class="checkbox-section">
+                    <div class="checkbox-wrapper">
+                        <div class="custom-checkbox" id="agreementCheckbox" onclick="toggleCheckbox()"></div>
+                    </div>
+                    <div class="checkbox-text">
+                        我已仔细阅读并同意<a href="#" onclick="showFullAgreement()">《防范电信网络诈骗承诺书》</a>的全部内容，承诺严格遵守相关规定。
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 底部按钮 -->
+        <div class="footer">
+            <button class="btn-confirm" id="confirmBtn" onclick="confirmAgreement()" disabled>
+                我已阅读（20S）
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let countdown = 20;
+        let countdownInterval;
+        let isChecked = false; // 默认不勾选
+        let canSubmit = false;
+
+        // 页面加载完成后开始倒计时
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('温馨提示页面已加载');
+            
+            // 初始化按钮状态
+            updateButtonState();
+            
+            // 开始倒计时
+            startCountdown();
+            
+            // 添加淡入动画
+            document.querySelector('.content-container').classList.add('fade-in');
+        });
+
+        // 开始倒计时
+        function startCountdown() {
+            countdownInterval = setInterval(function() {
+                countdown--;
+                
+                // 更新按钮文字显示倒计时
+                updateButtonState();
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    canSubmit = true;
+                    updateButtonState();
+                }
+            }, 1000);
+        }
+
+        // 切换勾选状态
+        function toggleCheckbox() {
+            isChecked = !isChecked;
+            const checkbox = document.getElementById('agreementCheckbox');
+            
+            if (isChecked) {
+                checkbox.classList.add('checked');
+            } else {
+                checkbox.classList.remove('checked');
+            }
+            
+            updateButtonState();
+        }
+
+        // 更新按钮状态
+        function updateButtonState() {
+            const confirmBtn = document.getElementById('confirmBtn');
+            
+            if (isChecked && canSubmit) {
+                confirmBtn.classList.add('enabled');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = '我已阅读（20S）';
+            } else if (!isChecked) {
+                confirmBtn.classList.remove('enabled');
+                confirmBtn.disabled = true;
+                if (canSubmit) {
+                    confirmBtn.textContent = '请先勾选同意承诺书';
+                } else {
+                    confirmBtn.textContent = `我已阅读（${countdown}S）`;
+                }
+            } else if (!canSubmit) {
+                confirmBtn.classList.remove('enabled');
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = `我已阅读（${countdown}S）`;
+            }
+        }
+
+        // 确认提交
+        function confirmAgreement() {
+            if (!isChecked || !canSubmit) {
+                return;
+            }
+            
+            console.log('用户确认提交防范电信网络诈骗承诺书');
+            
+            // 直接跳转到身份证上传页面
+            if (window.parent !== window) {
+                // 通知父窗口关闭当前页面并跳转到身份证上传页面
+                window.parent.postMessage({ 
+                    type: 'closeAgreementModal',
+                    action: 'redirectToIdUpload'
+                }, '*');
+            } else {
+                // 如果不在iframe中，直接跳转
+                window.location.href = '身份证上传.html';
+            }
+        }
+
+        // 显示完整承诺书（可选功能）
+        function showFullAgreement() {
+            alert('这里可以显示完整的承诺书内容或跳转到详细页面');
+        }
+
+        // 页面卸载时清理定时器
+        window.addEventListener('beforeunload', function() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        });
+    </script>
+</body>
+</html>

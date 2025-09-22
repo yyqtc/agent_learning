@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧酒店包 - 产品详情</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .page-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background-color: #fff;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 确保滚动时布局正确 */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* 状态栏 */
+        .status-bar {
+            height: 44px;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 导航栏 */
+        .nav-bar {
+            height: 44px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Tab导航 */
+        .tabs {
+            position: fixed;
+            top: 88px;
+            left: 0;
+            right: 0;
+            z-index: 9;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            max-width: 375px;
+            margin: 0 auto;
+        }
+
+        .tab-item {
+            padding: 12px 30px;
+            font-size: 16px;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-item.active {
+            color: #007AFF;
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background-color: #007AFF;
+        }
+
+        /* 内容区域 */
+        .content-container {
+            padding-top: 0;
+            padding-bottom: 70px;
+        }
+
+        /* 轮播图 - 使用您提供的图片 */
+        .swiper {
+            height: 314px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 88px;
+        }
+
+        .swiper-item-content {
+            height: 100%;
+            position: relative;
+        }
+
+        .banner-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* 内容头部 */
+        .content-header {
+            background-color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .content-title {
+            flex: 1;
+        }
+
+        .price {
+            color: #ff3c2a;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .price-num {
+            font-size: 24px;
+        }
+
+        .product-name {
+            font-size: 14px;
+            font-weight: 900;
+            color: #383838;
+            line-height: 1.4;
+        }
+
+        .share {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .share-icon {
+            width: 18px;
+            height: 18px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>') center/cover;
+            margin-bottom: 4px;
+        }
+
+        .share span {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 已选规格 */
+        .selected-bar {
+            background-color: #fff;
+            padding: 15px 20px;
+            margin-top: 5px;
+            position: relative;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .selected-bar::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-top: 2px solid #93908e;
+            border-right: 2px solid #93908e;
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .select-list {
+            margin-left: 10px;
+            color: #616368;
+        }
+
+        /* 内容主体 */
+        .content-body {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 5px;
+        }
+
+        .title {
+            font-size: 14px;
+            color: #242424;
+            position: relative;
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2.5px;
+            background: linear-gradient(90deg, #f17338 0%, #cccccc 100%);
+        }
+
+        .product-intro {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .tip-content {
+            color: #696969;
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* 底部按钮 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            padding: 10px 20px;
+            background-color: #fff;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: 44px;
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056CC;
+        }
+
+        .btn-primary:active {
+            background-color: #004499;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px;
+            max-width: 300px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* 分享选项样式 */
+        .share-options {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        
+        .share-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        
+        .share-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .share-icon {
+            margin-bottom: 10px;
+        }
+        
+        .share-item span {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* 规格选择弹窗样式 */
+        .spec-modal-content {
+            background-color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 375px;
+            width: 90%;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .current-selection {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background-color: #007AFF;
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .selection-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .current-price {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .spec-section {
+            margin-bottom: 20px;
+        }
+
+        .spec-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .spec-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .spec-btn, .price-btn, .bandwidth-btn {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #f5f5f5;
+            color: #666;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 50px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .spec-btn.active, .bandwidth-btn.active {
+            background-color: #007AFF;
+            color: white;
+            border-color: #007AFF;
+        }
+
+        .price-btn.active {
+            background-color: #e3f2fd;
+            color: #333;
+            border-color: #007AFF;
+        }
+
+        .spec-btn:hover, .price-btn:hover, .bandwidth-btn:hover {
+            border-color: #007AFF;
+        }
+
+        .promo-tag {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .spec-btn[data-type="year"] {
+            border-color: #ff6b35;
+            color: #333;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            height: 36px;
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            height: 36px;
+            background-color: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 375px) {
+            .page-container {
+                max-width: 100%;
+            }
+        }
+
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* 底部弹出动画 */
+        .spec-modal-content {
+            animation: slideUpFromBottom 0.3s ease-out;
+        }
+
+        @keyframes slideUpFromBottom {
+            from { 
+                transform: translateY(100%); 
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0); 
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span>21:11</span>
+            </div>
+            <div class="status-right">
+                <span>📶</span>
+                <span>5G</span>
+                <span>🔋90%</span>
+            </div>
+        </div>
+
+        <!-- 导航栏 -->
+        <div class="nav-bar">
+            <div class="nav-left">
+                <span>←</span>
+                <span>×</span>
+            </div>
+            <div class="nav-title">智慧酒店包</div>
+            <div></div>
+        </div>
+
+        <!-- Tab导航 -->
+        <div class="tabs">
+            <div class="tabs-container">
+                <div class="tab-item active" data-tab="0">商品</div>
+                <div class="tab-item" data-tab="1">详情</div>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content-container">
+            <!-- 轮播图 - 使用您提供的图片 -->
+            <div class="swiper">
+                <div class="swiper-item-content">
+                    <img src="banner.jpg" alt="智慧酒店包" class="banner-image" />
+                </div>
+            </div>
+
+            <!-- 内容头部 -->
+            <div class="content-header">
+                <div class="content-title">
+                    <div class="price">
+                        ￥<span class="price-num">40</span>月套餐
+                    </div>
+                    <div class="product-name" id="productName">【爱企商城】智慧酒店包40元月套餐</div>
+                </div>
+                <div class="share" onclick="handleShare()">
+                    <div class="share-icon"></div>
+                    <span>分享</span>
+                </div>
+            </div>
+
+            <!-- 已选规格 -->
+            <div class="selected-bar" onclick="showSpecModal()">
+                <strong>已选</strong>
+                <span class="select-list">带宽：100M，电视：商务电视IPTV，屏幕定制：屏幕定制标准版</span>
+            </div>
+
+            <!-- 商品介绍 -->
+            <div class="content-body" id="contentBody">
+                <h4 class="title">商品介绍</h4>
+                <div class="product-intro">
+                    <img src="info.png" alt="商品介绍" class="intro-image" />
+                </div>
+            </div>
+
+            <!-- 温馨提示 -->
+            <div class="content-body">
+                <h4 class="title">温馨提示</h4>
+                <p class="tip-content">
+                    产品实际情况以官方解释为准，感谢您的理解与支持
+                </p>
+            </div>
+        </div>
+
+        <!-- 底部按钮 -->
+        <div class="footer">
+            <button class="btn-primary" onclick="showSpecModal()">立即订购</button>
+        </div>
+    </div>
+
+    <!-- 规格选择弹窗 -->
+    <div class="modal" id="specModal">
+        <div class="spec-modal-content slide-up">
+            <!-- 当前选择显示 -->
+            <div class="current-selection">
+                <div class="selection-info">
+                    <span class="product-name">智慧酒店包</span>
+                </div>
+                <div class="price-section">
+                    <span class="current-price">¥40</span>
+                    <span class="remove-btn">×</span>
+                </div>
+            </div>
+
+            <!-- 套餐类型选择 -->
+            <div class="spec-section">
+                <div class="spec-options">
+                    <button class="spec-btn active" data-type="month" onclick="selectPackageType('month', this)">
+                        月包
+                    </button>
+                    <button class="spec-btn" data-type="year" onclick="selectPackageType('year', this)">
+                        年包
+                        <span class="promo-tag">抢</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 价格选择 -->
+            <div class="spec-section">
+                <div class="spec-options">
+                    <button class="price-btn active" data-price="40" onclick="selectPrice(40, this)">¥40</button>
+                    <button class="price-btn" data-price="50" onclick="selectPrice(50, this)">¥50</button>
+                    <button class="price-btn" data-price="80" onclick="selectPrice(80, this)">¥80</button>
+                    <button class="price-btn" data-price="100" onclick="selectPrice(100, this)">¥100</button>
+                    <button class="price-btn" data-price="120" onclick="selectPrice(120, this)">¥120</button>
+                </div>
+            </div>
+
+            <!-- 带宽选择 -->
+            <div class="spec-section">
+                <div class="spec-label">宽带</div>
+                <div class="spec-options">
+                    <button class="bandwidth-btn active" data-bandwidth="100" onclick="selectBandwidth('100M', this)">100M</button>
+                    <button class="bandwidth-btn" data-bandwidth="200" onclick="selectBandwidth('200M', this)">200M</button>
+                    <button class="bandwidth-btn" data-bandwidth="300" onclick="selectBandwidth('300M', this)">300M</button>
+                    <button class="bandwidth-btn" data-bandwidth="600" onclick="selectBandwidth('600M', this)">600M</button>
+                    <button class="bandwidth-btn" data-bandwidth="1000" onclick="selectBandwidth('1000M', this)">1000M</button>
+                </div>
+            </div>
+
+            <!-- 确认按钮 -->
+            <div class="modal-buttons">
+                <button class="btn-confirm" onclick="confirmSpec()">确认选择</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享弹窗 -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content slide-up">
+            <div class="modal-title">分享产品</div>
+            
+            <!-- 分享选项 -->
+            <div class="share-options">
+                <div class="share-item" onclick="shareWithQrCode()">
+                    <div class="share-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="20" height="20" rx="2" stroke="#CCCCCC" stroke-width="2"/>
+                            <rect x="5" y="5" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="12" y="5" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="19" y="5" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="5" y="12" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="12" y="12" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="19" y="12" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="5" y="19" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="12" y="19" width="3" height="3" fill="#CCCCCC"/>
+                            <rect x="19" y="19" width="3" height="3" fill="#CCCCCC"/>
+                        </svg>
+                    </div>
+                    <span>二维码分享</span>
+                </div>
+                
+                <div class="share-item" onclick="copyPromotionLink()">
+                    <div class="share-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V7.5L14.5 2Z" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M14 2V8H20" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 13H16" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M8 17H16" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M10 9H11" stroke="#CCCCCC" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span>复制推广文案链接</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab切换功能
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 移除所有active类
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                // 添加active类到当前tab
+                this.classList.add('active');
+                
+                const tabIndex = this.dataset.tab;
+                if (tabIndex === '1') {
+                    // 滚动到详情部分
+                    document.getElementById('contentBody').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    // 滚动到顶部
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // 全局消息监听器
+        window.addEventListener('message', function(event) {
+            console.log('=== 产品详情页接收到消息 ===');
+            console.log('消息来源:', event.origin);
+            console.log('消息数据:', event.data);
+            
+            if (event.data.type === 'closeModal') {
+                console.log('关闭弹窗');
+                // 查找并移除iframe
+                const specModalIframe = document.getElementById('specModalIframe');
+                if (specModalIframe) {
+                    console.log('通过ID找到并移除弹窗iframe');
+                    document.body.removeChild(specModalIframe);
+                } else {
+                    // 如果找不到带ID的iframe，使用原来的方式查找
+                    console.log('通过ID未找到，尝试通过src查找');
+                    const iframes = document.querySelectorAll('iframe');
+                    iframes.forEach(iframe => {
+                        if (iframe.src.includes('智慧酒店包规格选择弹窗.html')) {
+                            console.log('通过src找到并移除弹窗iframe');
+                            document.body.removeChild(iframe);
+                        }
+                    });
+                }
+            } else if (event.data.type === 'updateSelection') {
+                console.log('更新选择信息');
+                // 更新页面显示的选择信息
+                updateSelectedInfoFromModal(event.data.selection);
+            } else {
+                console.log('未知消息类型:', event.data.type);
+            }
+        });
+
+        // 规格选择弹窗
+        function showSpecModal() {
+            console.log('=== 打开规格选择弹窗 ===');
+            
+            // 创建iframe弹窗
+            const iframe = document.createElement('iframe');
+            // 使用相对路径，更稳定可靠
+            const popupUrl = '智慧酒店包规格选择弹窗.html';
+            iframe.src = popupUrl;
+            iframe.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+                z-index: 10000;
+                background-color: rgba(0, 0, 0, 0.5);
+            `;
+            iframe.id = 'specModalIframe'; // 添加ID以便更容易找到
+            
+            // 添加到页面
+            document.body.appendChild(iframe);
+            console.log('规格选择弹窗iframe已创建并添加到页面');
+            console.log('弹窗URL:', popupUrl);
+        }
+
+        function closeSpecModal() {
+            // 先尝试通过ID查找iframe
+            const specModalIframe = document.getElementById('specModalIframe');
+            if (specModalIframe) {
+                document.body.removeChild(specModalIframe);
+                console.log('通过ID移除了弹窗iframe');
+            } else {
+                // 如果找不到带ID的iframe，使用原来的方式查找
+                const iframes = document.querySelectorAll('iframe');
+                iframes.forEach(iframe => {
+                    if (iframe.src.includes('智慧酒店包规格选择弹窗.html')) {
+                        document.body.removeChild(iframe);
+                        console.log('通过src查找并移除了弹窗iframe');
+                    }
+                });
+            }
+            
+            // 同时关闭原有的弹窗元素
+            const modalElement = document.getElementById('specModal');
+            if (modalElement) {
+                modalElement.classList.remove('show');
+            }
+        }
+
+        function confirmSpec() {
+            closeSpecModal();
+            // 更新页面显示的选择信息
+            updateSelectedInfo();
+            alert('规格选择成功！');
+        }
+
+        // SKU规格联动配置
+        const skuConfig = {
+            'month': {
+                '40': ['100M'],
+                '50': ['200M'],
+                '80': ['300M'],
+                '100': ['600M'],
+                '120': ['1000M']
+            },
+            'year': {
+                '400': ['100M'],
+                '500': ['200M'],
+                '800': ['300M'],
+                '1000': ['600M'],
+                '1200': ['1000M']
+            }
+        };
+
+        // 选择套餐类型
+        function selectPackageType(type, element) {
+            // 移除所有active类
+            document.querySelectorAll('.spec-btn').forEach(btn => btn.classList.remove('active'));
+            // 添加active类到当前按钮
+            element.classList.add('active');
+            
+            // 更新带宽选项状态
+            updateBandwidthOptions();
+        }
+
+        // 选择价格
+        function selectPrice(price, element) {
+            // 移除所有active类
+            document.querySelectorAll('.price-btn').forEach(btn => btn.classList.remove('active'));
+            // 添加active类到当前按钮
+            element.classList.add('active');
+            // 更新当前价格显示
+            document.querySelector('.current-price').textContent = '¥' + price;
+            
+            // 更新带宽选项状态
+            updateBandwidthOptions();
+        }
+
+        // 选择带宽
+        function selectBandwidth(bandwidth, element) {
+            // 检查当前带宽是否可用
+            if (element.classList.contains('disabled')) {
+                return;
+            }
+            
+            // 移除所有active类
+            document.querySelectorAll('.bandwidth-btn').forEach(btn => btn.classList.remove('active'));
+            // 添加active类到当前按钮
+            element.classList.add('active');
+        }
+
+        // 更新带宽选项状态
+        function updateBandwidthOptions() {
+            const currentPackageType = document.querySelector('.spec-btn.active')?.getAttribute('data-type') || 'month';
+            const currentPrice = document.querySelector('.price-btn.active')?.textContent || '¥40';
+            const priceValue = currentPrice.replace('¥', '');
+            
+            // 获取当前价格对应的可用带宽
+            const availableBandwidths = skuConfig[currentPackageType][priceValue] || [];
+            
+            // 更新所有带宽按钮状态
+            document.querySelectorAll('.bandwidth-btn').forEach(btn => {
+                const bandwidth = btn.textContent;
+                
+                if (availableBandwidths.includes(bandwidth)) {
+                    // 可用带宽
+                    btn.classList.remove('disabled');
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    // 不可用带宽
+                    btn.classList.add('disabled');
+                    btn.style.opacity = '0.4';
+                    btn.style.cursor = 'not-allowed';
+                    
+                    // 如果当前选中的带宽不可用，清除选中状态
+                    if (btn.classList.contains('active')) {
+                        btn.classList.remove('active');
+                    }
+                }
+            });
+            
+            // 如果当前没有选中的带宽，自动选择第一个可用的
+            const activeBandwidth = document.querySelector('.bandwidth-btn.active');
+            if (!activeBandwidth || activeBandwidth.classList.contains('disabled')) {
+                const firstAvailable = document.querySelector('.bandwidth-btn:not(.disabled)');
+                if (firstAvailable) {
+                    firstAvailable.classList.add('active');
+                }
+            }
+        }
+
+        // 更新页面显示的选择信息
+        function updateSelectedInfo() {
+            const activePrice = document.querySelector('.price-btn.active');
+            const activeBandwidth = document.querySelector('.bandwidth-btn.active');
+            const activePackage = document.querySelector('.spec-btn.active');
+            
+            if (activePrice && activeBandwidth && activePackage) {
+                const price = activePrice.dataset.price;
+                const bandwidth = activeBandwidth.textContent;
+                const packageType = activePackage.textContent.replace('抢', '').trim();
+                
+                // 更新页面上的已选信息
+                const selectList = document.querySelector('.select-list');
+                selectList.textContent = `带宽：${bandwidth}，电视：商务电视IPTV，屏幕定制：屏幕定制标准版`;
+                
+                // 更新价格显示
+                const priceElement = document.querySelector('.price-num');
+                if (priceElement) {
+                    priceElement.textContent = price;
+                }
+            }
+        }
+
+        // 从弹窗更新选择信息
+        function updateSelectedInfoFromModal(selection) {
+            console.log('=== 产品详情页接收选择数据 ===');
+            console.log('选择数据:', selection);
+            
+            // 更新产品标题
+            const productNameElement = document.getElementById('productName');
+            if (productNameElement) {
+                const packetTypeText = selection.packetType === 'month' ? '月包' : '年包';
+                const currentPrice = selection.packetType === 'month' ? 
+                    selection.price : 
+                    selection.price * 10;
+                const newTitle = `【爱企商城】智慧酒店包${currentPrice}元${packetTypeText}`;
+                productNameElement.textContent = newTitle;
+                console.log('更新产品标题为:', newTitle);
+            }
+            
+            // 更新页面上的已选信息
+            const selectList = document.querySelector('.select-list');
+            selectList.textContent = `带宽：${selection.bandwidth}，电视：${selection.tv}，屏幕定制：${selection.screen}`;
+            
+            // 更新价格显示
+            const priceElement = document.querySelector('.price-num');
+            if (priceElement) {
+                const currentPrice = selection.packetType === 'month' ? 
+                    selection.price : 
+                    selection.price * 10;
+                priceElement.textContent = currentPrice;
+                console.log('更新价格为:', currentPrice);
+            }
+            
+            // 更新套餐类型显示
+            const priceContainer = document.querySelector('.price');
+            if (priceContainer) {
+                const packetTypeText = selection.packetType === 'month' ? '月套餐' : '年套餐';
+                priceContainer.innerHTML = `￥<span class="price-num">${priceElement.textContent}</span>${packetTypeText}`;
+                console.log('更新套餐类型为:', packetTypeText);
+            }
+            
+            console.log('已更新选择信息:', selection);
+        }
+
+        // 分享功能
+        function handleShare() {
+            document.getElementById('shareModal').classList.add('show');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.remove('show');
+        }
+        
+        // 二维码分享功能
+        function shareWithQrCode() {
+            // 实际项目中这里应该生成并显示二维码
+            alert('二维码分享功能已触发！');
+        }
+        
+        // 复制推广文案链接
+        function copyPromotionLink() {
+            const promotionText = `智慧酒店包为酒店、民宿、公寓等行业提供客房一体化"网络+电视"解决方案\n${window.location.href}`;
+            
+            // 创建临时文本区域
+            const textArea = document.createElement('textarea');
+            textArea.value = promotionText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('推广文案链接已复制到剪贴板！');
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 点击弹窗外部关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                }
+            });
+        });
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== 智慧酒店包产品详情页已加载 ===');
+            console.log('页面URL:', window.location.href);
+            console.log('是否有父窗口:', window.parent !== window);
+            
+            // 添加淡入动画
+            document.querySelector('.content-container').classList.add('fade-in');
+            
+            // 初始化带宽选项状态
+            updateBandwidthOptions();
+            
+            // 模拟数据加载
+            console.log('产品详情页初始化完成');
+        });
+
+        // 滚动监听
+        window.addEventListener('scroll', function() {
+            const tabs = document.querySelector('.tabs');
+            const scrollTop = window.pageYOffset;
+            
+            if (scrollTop > 100) {
+                tabs.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            } else {
+                tabs.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
