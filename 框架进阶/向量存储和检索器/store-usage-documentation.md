@@ -133,9 +133,9 @@ setOrderType(state, payload)
 setQrCodeId(state, payload)
 // 使用示例：this.$store.commit('setQrCodeId', 'QR123456')
 
-// 设置客户经理信息（注意：此mutation实际设置的是customerManagerInfo）
+// 设置客户编号
 setCustManagerNo(state, payload)
-// 使用示例：this.$store.commit('setCustManagerNo', { custManagerNo: 'CUST123456' })
+// 使用示例：this.$store.commit('setCustManagerNo', 'CUST123456')
 
 // 设置地区信息
 setRegion(state, payload)
@@ -192,7 +192,7 @@ closeMap({ commit })
 // 使用示例：this.$store.dispatch('closeMap')
 
 // 地图选择完成
-mapSelectComplete({ commit, state }, data)
+mapSelectComplete({ commit }, data)
 // 使用示例：this.$store.dispatch('mapSelectComplete', { lat: 39.9, lng: 116.4 })
 ```
 
@@ -201,23 +201,6 @@ mapSelectComplete({ commit, state }, data)
 // 登录倒计时
 printTimeLogin({ commit, dispatch, state })
 // 使用示例：this.$store.dispatch('printTimeLogin')
-
-// 移除用户信息（已注释，但保留供参考）
-// removeUserInfo({ commit })
-// 功能：清除token、phone和localStorage中的用户信息
-// 注意：此方法在代码中被注释，如需使用需要先取消注释
-```
-
-### 5. 已注释的方法
-```javascript
-// 移除用户信息（当前被注释）
-// removeUserInfo({ commit })
-// 功能说明：
-// - 清除用户token
-// - 清除用户手机号
-// - 清除localStorage中的用户缓存
-// 使用场景：用户登出时清理所有用户相关数据
-// 注意：此方法在代码中被注释，如需使用需要先取消注释
 ```
 
 ## 在组件中的使用方式
@@ -280,7 +263,6 @@ watch: {
 4. **地图组件**：地图相关状态需要配合地图组件使用，注意回调函数的设置
 5. **登录流程**：登录相关状态有复杂的业务逻辑，包括4G登录、脱敏手机号等
 6. **错误处理**：在actions中需要适当处理API调用失败的情况
-7. **代码一致性**：确保mutation名称与实际设置的state属性一致
 
 ## 常用开发模式
 

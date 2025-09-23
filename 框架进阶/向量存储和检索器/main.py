@@ -9,20 +9,37 @@ file_path = "C:\\Users\\80570\\Desktop\\test.pdf"
 loader = PyPDFLoader(file_path)
 docs = loader.load()
 
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters import MarkdownHeaderTextSplitter
 
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=200, 
-    chunk_overlap=20, 
-    add_start_index=True
+headers_to_split_on = [
+    ("#", "Header 1"),
+    ("##", "Header 2"),
+    ("###", "Header 3"),
+]
+
+text_splitter = MarkdownHeaderTextSplitter(
+    headers_to_split_on=headers_to_split_on,
+    strip_headers=True
 )
 
-all_splits = text_splitter.split_documents(docs)
-
-from langchain_community.embeddings import DashScopeEmbeddings
-
-embedding = DashScopeEmbeddings(
-    model="text-embedding-v2",
-    dashscope_api_key=config["QWEN_API_KEY"]
-)
-
+with open("store-usage-documentation.md", "r", encoding="utf-8") as f:
+    markdown_content = f.read()
+    all_splits = text_splitter.split_text(markdown_content)
+    
+    from langchain.vectorstores import Chroma
+    from langchain.embeddings import DashScopeEmbeddings
+    from uuid import uuid4
+    
+    embeddings = DashScopeEmbeddings(
+        model="text-embedding-v2",
+        dashscope_api_key=config["QWEN_API_KEY"]
+    )
+    vectorstore = Chroma(
+        collection_name="test",
+        embedding_function=embeddings
+    )
+    uuids = [str(uuid4()) for _ in range(len(all_splits))]
+    vectorstore.add_documents(documents=all_splits, ids=uuids)
+    result = vectorstore.similarity_search_with_score("什么是LangChain？")
+    
+    print(result)
