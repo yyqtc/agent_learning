@@ -30,7 +30,7 @@ class Agent:
 
         config = json.load(open("config.json", "r"))
         self.qwen_api_key = config["QWen-API-KEY"]
-        self.qwen_api_base = config["QWen-API-BASE"]   
+        self.QWEN_API_BASE = config["QWEN_API_BASE"]   
 
     def register_tool(self, func: Callable):
         sig = inspect.signature(func)
@@ -80,7 +80,7 @@ class Agent:
         self.messages.append({"role": "user", "content": user_input})
         client = OpenAI(
             api_key=self.qwen_api_key,
-            base_url=self.qwen_api_base
+            base_url=self.QWEN_API_BASE
         )
         completion = client.chat.completions.create(
             model="qwen-plus",
@@ -94,7 +94,7 @@ class Agent:
         
         client = OpenAI(
             api_key=self.qwen_api_key,
-            base_url=self.qwen_api_base
+            base_url=self.QWEN_API_BASE
         )
         completion = client.chat.completions.create(
             model="qwen-plus",

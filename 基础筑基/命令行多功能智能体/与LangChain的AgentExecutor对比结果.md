@@ -113,7 +113,7 @@ for action in action["actions"]:  # 支持多个工具同时调用
 ```python
 # 直接处理具体的API调用和JSON解析
 def llm_response(self, user_input: str) -> str:
-    client = OpenAI(api_key=self.qwen_api_key, base_url=self.qwen_api_base)
+    client = OpenAI(api_key=self.qwen_api_key, base_url=self.QWEN_API_BASE)
     completion = client.chat.completions.create(
         model="qwen-plus",
         messages=self.messages,
@@ -245,7 +245,7 @@ agent_executor = AgentExecutor(
 **自定义实现**：
 ```python
 # 直接实例化，硬编码依赖
-client = OpenAI(api_key=self.qwen_api_key, base_url=self.qwen_api_base)
+client = OpenAI(api_key=self.qwen_api_key, base_url=self.QWEN_API_BASE)
 ```
 
 **LangChain的工厂模式**：

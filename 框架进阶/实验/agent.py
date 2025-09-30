@@ -28,7 +28,7 @@ class Agent:
         _llm = ChatOpenAI(
             model = "qwen-plus",
             openai_api_key=config["QWEN_API_KEY"],
-            openai_api_base=config["QWen-API-BASE"],
+            openai_api_base=config["QWEN_API_BASE"],
             temperature=0.7
         )
 

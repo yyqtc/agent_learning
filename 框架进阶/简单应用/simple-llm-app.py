@@ -21,7 +21,7 @@ llm = ChatOpenAI(
 )
 
 prompt = ChatPromptTemplate.from_template(
-    "你是一个英语翻译专家，请将以下内容翻译成中文：{input}"
+    "你是一个英语翻译专家，请以{style}的风格将以下内容翻译成中文：{input}"
 )
 
 parser = StrOutputParser()

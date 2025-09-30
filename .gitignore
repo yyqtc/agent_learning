@@ -1,5 +1,6 @@
 __pycache__
 knowledge
 config.json
+develop-plan.md
 private_key.pem
 public_key.pem

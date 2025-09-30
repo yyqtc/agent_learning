@@ -1,7 +1,7 @@
 {
     "LANGCHAIN_API_KEY": "your-langchain-api-key",
     "QWEN_API_KEY": "your-qwen-api-key",
-    "QWen-API-BASE": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "QWEN_API_BASE": "https://dashscope.aliyuncs.com/compatible-mode/v1",
     "API_DB_PATH": "your-api-db-path",
     "COMMON_UTILS_DB_PATH": "your-common-utils-db-path",
     "STORAGE_DB_PATH": "your-storage-db-path",
