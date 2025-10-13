@@ -202,17 +202,13 @@ if __name__ == "__main__":
         适当用典，
         意象奇而不诡，险而有据，
         谙地理，避陈言，
-        避免使用现代词汇和网络词汇
-        第三句使用巴江倒卷云峰裂,
+        避免使用现代词汇和网络词汇，
+        第三句使用巴江倒卷云峰裂
     """))
     
     #result = asyncio.run(test("""
     #    我想开发一个开发Vue+Uniapp前端项目的agent，这个agent采用plan-and-execute框架，
     #    要确保planner具备上下文理解能力，能根据项目结构（如pages.json、components目录）和Vue+Uniapp框架规范生成合理任务序列的能力，我应该怎么开发planner，能否给一些提示
     #"""))
-
-    # result = asyncio.run(test("""
-    #    我给公司的同事带了一些四川特产，帮我想一个合适的说法。
-    # """))
 
     print("result: \n", result, "\n")
