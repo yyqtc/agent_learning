@@ -2,7 +2,7 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 import json
 import os
 
-config = json.load(open("config.json"))
+config = json.load(open("config.json", encoding="utf-8"))
 
 def _set_env(var: str):
     if not os.environ.get(var):
@@ -194,21 +194,6 @@ async def test(str):
 import asyncio
 
 if __name__ == "__main__":
-    result = asyncio.run(test("""
-        帮我写一首七言绝句歌颂古四川人开拓精神，
-        风格磅礴大气，
-        语言含蓄古典，
-        内容逻辑连贯，
-        适当用典，
-        意象奇而不诡，险而有据，
-        谙地理，避陈言，
-        避免使用现代词汇和网络词汇，
-        第三句使用巴江倒卷云峰裂
-    """))
-    
-    #result = asyncio.run(test("""
-    #    我想开发一个开发Vue+Uniapp前端项目的agent，这个agent采用plan-and-execute框架，
-    #    要确保planner具备上下文理解能力，能根据项目结构（如pages.json、components目录）和Vue+Uniapp框架规范生成合理任务序列的能力，我应该怎么开发planner，能否给一些提示
-    #"""))
+    result = asyncio.run(test(config["prompt"]))
 
-    print("result: \n", result, "\n")
+    print("result:\n", result, "\n")
