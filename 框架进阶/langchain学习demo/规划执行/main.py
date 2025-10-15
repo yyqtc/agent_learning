@@ -22,7 +22,7 @@ llm = ChatOpenAI(
     openai_api_key=config["QWEN_API_KEY"],
     openai_api_base=config["QWEN_API_BASE"],
     temperature=0.7,
-    max_tokens=2000
+    max_tokens=1000000
 )
 
 prompt = "You are a helpful assistant."

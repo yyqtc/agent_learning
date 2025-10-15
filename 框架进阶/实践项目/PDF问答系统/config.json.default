@@ -2,5 +2,5 @@
     "LANGCHAIN_API_KEY": "your-langchain-api-key",
     "QWEN_API_KEY": "your-qwen-api-key",
     "QWEN_API_BASE": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-    "TAVILY_API_KEY": "your-tavily-api-key"
+    "PDF_DIR_PATH": "your-pdf-dir-path"
 }
