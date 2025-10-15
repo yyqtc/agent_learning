@@ -36,13 +36,13 @@ _llm = ChatOpenAI(
 
 planner = _prompt | _llm.with_structured_output(Plan)
 
-async def plan_node(user_input: str) -> PlanExecute:
-    state = await planner.ainvoke({
-        "messages": [("user", user_input)]
+async def plan_node(state: PlanExecute) -> PlanExecute:
+    result = await planner.ainvoke({
+        "messages": [("user", state["input"])]
     })
     
     return {
-        "plan": state.steps
+        "plan": result.steps
     }
 
 if __name__ == "__main__":

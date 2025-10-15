@@ -32,6 +32,9 @@ async def execute_node(state: PlanExecute) -> PlanExecute:
         return END
 
     task = state["plan"].pop(0)
+
+    print("task：", task, "\n")
+    
     formatted_task = f"""
     完成这个任务：{task}。不要返回和{task}无关的内容。
     """
