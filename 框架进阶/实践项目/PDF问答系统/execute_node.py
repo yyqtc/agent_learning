@@ -46,7 +46,7 @@ async def execute_node(state: PlanExecute) -> PlanExecute:
 
 if __name__ == "__main__":
     result = asyncio.run(execute_node({
-        "plan": ["整理出对‘风控’的清晰定义"]
+        "plan": ["整理出对Poisoning Expert的清晰定义"]
     }))
 
     print(result)
