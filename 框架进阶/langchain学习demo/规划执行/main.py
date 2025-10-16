@@ -54,6 +54,7 @@ planner = ChatPromptTemplate.from_messages([
         针对给定的目标，输出一份简单的按步骤执行的计划。
         这个计划应该包含若干个独立的任务，任务正确执行后，应该能够实现目标。
         不允许输出任何无关的任务。
+        你的计划不允许包含任何和答案有关的暗示。
         最后一个步骤输出的结果应该是最终的答案，确保每一个步骤都能得到所有需要的信息
         确保每个步骤都会执行。
         请以JSON格式输出计划，包含steps字段，steps字段类型List[str]。
@@ -98,6 +99,7 @@ replanner = ChatPromptTemplate.from_messages([
 
         根据以上信息更新你的计划。如果你认为不需要执行更多步骤，你可以直接输出答案给用户。否则你需要在计划中补充更多步骤。
         你只应该在计划中补充新的需要被执行的步骤，已经被完成的步骤不要补充进计划。
+        你的计划不允许包含任何和答案有关的暗示。
         计划请以JSON格式输出，包含action字段，action字段应该包含steps字段，steps字段类型List[str]。
         答案请以JSON格式输出，包含action字段，action字段应该包含response字段，response字段类型str。
         """
