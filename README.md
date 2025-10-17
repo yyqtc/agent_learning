@@ -183,7 +183,6 @@
 - LangChain Agent框架
 - arXiv API集成
 - SMTP邮件发送
-- 定时任务调度
 
 **核心特性**：
 - arXiv论文自动检索
