@@ -1,0 +1,17 @@
+# LangChain相关依赖
+langchain>=0.1.0
+langchain-openai>=0.1.0
+langchain-core>=0.1.0
+langchain-chroma>=0.1.0
+
+# LangGraph工作流框架
+langgraph>=0.1.0
+
+# PDF文件处理
+PyPDF2>=3.0.0
+
+# 数据模型和验证
+pydantic>=2.0.0
+
+# 类型扩展支持
+typing-extensions>=4.0.0

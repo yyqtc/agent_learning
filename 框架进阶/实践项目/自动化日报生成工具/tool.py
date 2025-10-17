@@ -18,18 +18,15 @@ def count_arxiv_latest_papers(keywords: List[str]) -> int:
         论文数量
     """
     import arxiv
-    import time
+    from datetime import date, timedelta
 
-    time = time.localtime()
-    year = time.tm_year
-    month = time.tm_mon
-    day = time.tm_mday
-
-    start_date = "{}{:02d}{:02d}".format(year, month, day - 1)
-    end_date = "{}{:02d}{:02d}".format(year, month, day)
+    start_date = date.today() - timedelta(days=1)
+    start_date_str = start_date.strftime("%Y%m%d")
+    end_date = date.today()
+    end_date_str = end_date.strftime("%Y%m%d")
 
     query = " AND ".join(keywords)
-    query += " AND submittedDate:[{} TO {}]".format(start_date, end_date)
+    query += " AND submittedDate:[{} TO {}]".format(start_date_str, end_date_str)
     search = arxiv.Search(query=query)
 
     Client = arxiv.Client()
@@ -53,19 +50,16 @@ def fetch_arxiv_latest_papers_with_limit(keywords: List[str], page: int = 0) -> 
         论文信息列表，包含了每篇论文的标题、作者、摘要、提交日期
     """
     import arxiv
-    from datetime import datetime, timedelta
+    from datetime import date, timedelta
 
-    time = time.localtime().sub
-    year = time.tm_year
-    month = time.tm_mon
-    day = time.tm_mday
-
-    start_date = "{}{:02d}{:02d}".format(year, month, day - 1)
-    end_date = "{}{:02d}{:02d}".format(year, month, day)
+    start_date = date.today() - timedelta(days=1)
+    start_date_str = start_date.strftime("%Y%m%d")
+    end_date = date.today()
+    end_date_str = end_date.strftime("%Y%m%d")
 
     results = []
     query = " AND ".join(keywords)
-    query += " AND submittedDate:[{} TO {}]".format(start_date, end_date)
+    query += " AND submittedDate:[{} TO {}]".format(start_date_str, end_date_str)
     search = arxiv.Search(
         query = query,
         sort_by = arxiv.SortCriterion.SubmittedDate,
@@ -84,7 +78,7 @@ def fetch_arxiv_latest_papers_with_limit(keywords: List[str], page: int = 0) -> 
     return results[page * 10: (page + 1) * 10]
 
 @tool
-async def send_email(subject: str, content: str) -> int:
+def send_email(subject: str, content: str) -> int:
     """
     发送邮件到系统指定的邮箱
 
@@ -101,15 +95,15 @@ async def send_email(subject: str, content: str) -> int:
 
     msg = MIMEMultipart()
     msg['From'] = config["EMAIL"]["SENDER_EMAIL"]
-    msg['To'] = config["EMAIL"]["RECIPIENT_EMAIL"]
+    msg['To'] = ", ".join(config["EMAIL"]["RECIPIENT_EMAIL"])  # 处理多个收件人
     msg['Subject'] = subject
 
-    msg.attach(MIMEText(content, 'plain'))
+    msg.attach(MIMEText(content, 'plain', 'utf-8'))  # 添加编码
     try:
-        with smtplib.SMTP(config["EMAIL"]["SMTP_SERVER"], config["EMAIL"]["SMTP_PORT"]) as server:
-            server.starttls()
+        # 使用SSL连接而不是TLS
+        with smtplib.SMTP_SSL(config["EMAIL"]["SMTP_SERVER"], config["EMAIL"]["SMTP_PORT"]) as server:
             server.login(config["EMAIL"]["SENDER_EMAIL"], config["EMAIL"]["SENDER_PASSWORD"])
-            await server.send_message(msg)
+            server.send_message(msg)
             print("邮件发送成功")
         return 0
     except Exception as e:

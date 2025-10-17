@@ -1,0 +1,10 @@
+# LangChain相关依赖
+langchain>=0.1.0
+langchain-openai>=0.1.0
+langchain-core>=0.1.0
+
+# arXiv论文数据获取
+arxiv>=2.0.0
+
+# 类型扩展支持
+typing-extensions>=4.0.0
