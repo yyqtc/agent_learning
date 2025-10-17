@@ -139,6 +139,63 @@
 - `client.py` - 客户端实现
 - `simple-llm-app.py` - 简单LLM应用示例
 
+#### 实践项目
+**核心概念**：基于LangGraph的复杂工作流系统
+
+**应用场景**：实际业务场景的Agent应用
+
+**技术实现**：
+- LangGraph工作流框架
+- 多节点协作（规划→执行→重规划）
+- 向量数据库集成
+- PDF文档处理
+
+**实际项目**：
+
+##### PDF问答系统
+**功能**：基于PDF文档的智能问答系统
+
+**技术架构**：
+- LangGraph状态图工作流
+- ChromaDB向量存储
+- PyPDF2文档处理
+- DashScope嵌入模型
+
+**核心特性**：
+- 智能任务规划与执行
+- PDF内容分块检索
+- 查询历史向量化存储
+- 动态重规划机制
+
+**实际文件**：
+- `main.py` - 主工作流入口
+- `plan_node.py` - 任务规划节点
+- `execute_node.py` - 任务执行节点
+- `replan_node.py` - 重规划节点
+- `tool.py` - PDF处理工具集
+- `db.py` - 向量数据库操作
+- `custome_type.py` - 数据模型定义
+
+##### 自动化日报生成工具
+**功能**：基于arXiv论文的自动化日报生成
+
+**技术架构**：
+- LangChain Agent框架
+- arXiv API集成
+- SMTP邮件发送
+- 定时任务调度
+
+**核心特性**：
+- arXiv论文自动检索
+- 智能日报内容生成
+- 邮件自动发送
+- 关键词过滤
+
+**实际文件**：
+- `main.py` - 主程序入口
+- `tool.py` - arXiv和邮件工具
+- `custome_type.py` - 数据类型定义
+
 ### 资源建议
 学习LangChain中文教程中的Chain组件，参考AutoGPT开源项目架构。
 
@@ -156,6 +213,7 @@
 
 ### 核心框架
 - **LangChain** - 主流Agent框架
+- **LangGraph** - 工作流编排框架
 - **FastAPI** - Web服务框架
 - **ChromaDB** - 向量数据库
 - **DashScope** - 阿里云大模型服务
@@ -168,6 +226,7 @@
 - **通义千问** - 阿里云大模型API
 - **DeepSeek** - 深度求索大模型API
 - **和风天气** - 天气数据API
+- **arXiv** - 学术论文API
 
 ---
 
@@ -212,7 +271,21 @@ python robot.py
 
 #### 智能开发助手
 ```bash
-cd 框架进阶/exp1
+cd 框架进阶/langchain学习demo/实验
+python main.py
+```
+
+#### PDF问答系统
+```bash
+cd 框架进阶/实践项目/PDF问答系统
+pip install -r requirements.txt
+python main.py
+```
+
+#### 自动化日报生成工具
+```bash
+cd 框架进阶/实践项目/自动化日报生成工具
+pip install -r requirements.txt
 python main.py
 ```
 
