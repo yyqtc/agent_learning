@@ -1,0 +1,12 @@
+{
+    "EMAIL": {
+        "SMTP_SERVER": "your-smtp-server",
+        "SMTP_PORT": 587,
+        "SENDER_EMAIL": "your-sender-email",
+        "SENDER_PASSWORD": "your-sender-password",
+        "RECIPIENT_EMAIL": ["your-recipient-email"]
+    },
+    "DEEPSEEK_API_KEY": "your-deepseek-api-key",
+    "DEEPSEEK_API_BASE": "https://api.deepseek.com",
+    "KEYWORDS": ["your-keywords"]
+}
