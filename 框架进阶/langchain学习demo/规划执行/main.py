@@ -125,6 +125,7 @@ async def execute_step(state: PlanExecute):
     task_formatted = \
         f"""
         完成这个任务：{task}。不要返回和{task}无关的内容。
+        你应该默认你的知识都是错误的，因此你必须完全依赖你的能力来完成这个任务。
         """
 
     agent_response = await agent_executor.ainvoke(

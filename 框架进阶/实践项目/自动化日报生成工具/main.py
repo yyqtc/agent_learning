@@ -1,5 +1,6 @@
 from langchain_openai import ChatOpenAI
-from langchain.agents import initialize_agent, AgentType
+from langchain.agents import create_structured_chat_agent, AgentExecutor
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from tool import tools
 
 import json
@@ -15,20 +16,67 @@ def main():
         temperature=0.7
     )
 
-    agent = initialize_agent(
-        tools=tools,
+    system_prompt = """
+        你是一个非常专业的助手。你可以使用以下能力：
+        {tools}
+
+        可使用的能力名称包括：{tool_names}
+                
+        当你认为应该调用能力时，你必须按照以下格式进行响应：
+        {{
+            "action": "工具名称(必须是上述的能力名称之一)",
+            "action_input": {{
+                "参数名称": "参数值"
+            }}
+        }}
+
+        当你认为可以得出最终答案时，你必须按照以下格式进行响应：
+        {{
+            "action": "Final Answer",
+            "action_input": {{
+                "output": "你的最终答案"
+            }}
+        }}
+        
+        注意！
+        你只能选择工具调用或是输出最终答案，不能进行其他操作。
+        你的输出必须符合JSON格式规范，不要添加任何多余的字符串。
+        action字段只能是工具名称或是Final Answer。
+        你必须默认你的知识是错误的，你必须完全依赖能力来完成任务。
+        
+        现在开始处理问题！
+    """
+
+    human = """
+        {input}
+
+        {agent_scratchpad}
+
+        注意务必按照JSON格式输出！
+    """
+
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", system_prompt),
+        ("human", human)
+    ])
+
+    agent = create_structured_chat_agent(
         llm=llm,
-        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-        max_iterations=100,
+        prompt=prompt,
+        tools=tools
+    )
+
+    agent_executor = AgentExecutor(
+        agent=agent, 
+        tools=tools,
         verbose=True,
+        max_iterations=100,
         handle_parsing_errors=True
     )
 
-
     t = date.today() - timedelta(days=1)
-
     user_input = f"""
-        你是一个非常专业的日报生成助手，你需要按步骤完成以下两个任务。
+        你是一位专业的编写日报的助手，我需要你按步骤完成以下两个任务。
         1.你需要分析关键词为{",".join(config["KEYWORDS"])}的论文，生成论文日报。
         如果你发现没有论文发布，你也应该生成标题为：{t.strftime("%Y年%m月%d日")}没有论文发布的日报。
         如果你发现有论文发布，则生成标题为：{t.strftime("%Y年%m月%d日")}的论文日报。
@@ -46,7 +94,7 @@ def main():
         2.你必须将日报以邮件形式发送到系统指定的邮箱。
     """
 
-    agent.invoke({
+    agent_executor.invoke({
         "input": user_input
     })
 
