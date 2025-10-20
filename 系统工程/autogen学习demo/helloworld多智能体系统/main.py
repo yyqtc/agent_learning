@@ -31,7 +31,7 @@ async def main():
     assistant = AssistantAgent(name="assistant", model_client=client)
     user_proxy = UserProxyAgent(name="user")
 
-    termination_condition = TextMentionTermination("TERMINATE") | MaxMessageTermination(10)
+    termination_condition = TextMentionTermination("TERMINATE") | MaxMessageTermination(2)
 
     group_chat = RoundRobinGroupChat(
         [assistant, user_proxy],
