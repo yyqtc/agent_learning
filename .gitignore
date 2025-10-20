@@ -2,6 +2,7 @@ __pycache__
 knowledge
 pdf
 config.json
+my-prompt.txt
 develop-plan.md
 private_key.pem
 public_key.pem
