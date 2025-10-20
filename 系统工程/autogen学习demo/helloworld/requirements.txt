@@ -1,0 +1,9 @@
+# Autogen相关依赖
+
+autogen-agentchat==0.7.5
+autogen-core==0.7.5
+jsonref==1.1.0
+pillow==12.0.0
+pyautogen==0.10.0
+autogen-ext==0.7.5
+aiofiles==25.1.0
