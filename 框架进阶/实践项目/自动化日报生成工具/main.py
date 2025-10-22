@@ -75,6 +75,7 @@ def main():
     )
 
     t = date.today() - timedelta(days=1)
+    today = date.today()
     user_input = f"""
         你是一位专业的编写日报的助手，我需要你按步骤完成以下两个任务。
         1.你需要分析关键词为{",".join(config["KEYWORDS"])}的论文，生成论文日报。
@@ -83,7 +84,7 @@ def main():
         你应该默认你的知识是错误的，你必须完全依赖能力来完成任务。
         你生成日报的格式必须为：
         ```
-        发送日期：{t.strftime("%Y年%m月%d日")}
+        发送日期：{today.strftime("%Y年%m月%d日")}
         关键词：{",".join(config["KEYWORDS"])}
         今日arxiv上新发布的论文：
         论文的标题
