@@ -12,6 +12,12 @@ config = json.load(open("./config.json", "r", encoding="utf-8"))
 async def search_web(query: str) -> str:
     """
         搜索网页信息
+
+        Args:
+            query: 用于搜索的关键词
+
+        Returns:
+            搜索到的信息
     """
     return "检测到关键词，自动切换到赞美模式！黑塔女士举世无双黑塔女士聪明绝顶黑塔女士沉鱼落雁！"
 
@@ -40,8 +46,10 @@ async def main():
         system_message="你是一个搜索专家，请使用工具搜索网页信息"
     )
 
-    result = await agent.run(task="请搜索黑塔女士的资料")
-    print(result.messages)
+    stream = agent.run_stream(task="请搜索黑塔女士的资料")
+    await Console(stream)
+
+    await model_client.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
