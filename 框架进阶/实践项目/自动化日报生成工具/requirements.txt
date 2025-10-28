@@ -1,7 +1,7 @@
 # LangChain相关依赖
-langchain==0.3.27
+langchain==1.0.2
 langchain-openai==0.3.32
-langchain-core==0.3.76
+langchain-core==1.0.1
 
 # arXiv论文数据获取
 arxiv>=2.0.0

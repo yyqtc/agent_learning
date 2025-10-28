@@ -68,9 +68,12 @@ def fetch_arxiv_latest_papers_with_limit(keywords: List[str], page: int = 0) -> 
 
     Client = arxiv.Client()
     for result in Client.results(search):
+        # 将 authors 转换为字符串列表
+        authors = [str(author) for author in result.authors]
+        
         results.append({
             "title": result.title,
-            "authors": result.authors,
+            "authors": authors,
             "abstract": result.summary,
             "submitted_date": result.published.strftime("%Y-%m-%d")
         })

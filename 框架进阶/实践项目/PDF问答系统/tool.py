@@ -1,6 +1,7 @@
 from langchain.tools import tool
 from typing import List
 
+import os
 import json
 
 config = json.load(open("./config.json", encoding="utf-8"))

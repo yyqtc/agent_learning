@@ -1,6 +1,6 @@
 from langchain_chroma import Chroma
-from langchain.embeddings import DashScopeEmbeddings
-from langchain.docstore.document import Document
+from langchain_community.embeddings import DashScopeEmbeddings
+from langchain_community.docstore.document import Document
 from uuid import uuid4
 
 import json

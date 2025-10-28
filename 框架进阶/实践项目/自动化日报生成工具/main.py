@@ -1,6 +1,8 @@
 from langchain_openai import ChatOpenAI
-from langchain.agents import create_structured_chat_agent, AgentExecutor
+from langchain.agents import create_agent
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+
+from middleware import middlewares
 from tool import tools
 
 import json
@@ -9,7 +11,7 @@ from datetime import date, timedelta
 config = json.load(open("./config.json", encoding="utf-8"))
 
 def main():
-    llm = ChatOpenAI(
+    model = ChatOpenAI(
         model="deepseek-chat",
         openai_api_key=config["DEEPSEEK_API_KEY"],
         openai_api_base=config["DEEPSEEK_API_BASE"],
@@ -17,10 +19,7 @@ def main():
     )
 
     system_prompt = """
-        你是一个非常专业的助手。你可以使用以下能力：
-        {tools}
-
-        可使用的能力名称包括：{tool_names}
+        你是一个非常专业的助手。你可以使用能力来完成任务。
                 
         当你认为应该调用能力时，你必须按照以下格式进行响应：
         {{
@@ -47,31 +46,11 @@ def main():
         现在开始处理问题！
     """
 
-    human = """
-        {input}
-
-        {agent_scratchpad}
-
-        注意务必按照JSON格式输出！
-    """
-
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("human", human)
-    ])
-
-    agent = create_structured_chat_agent(
-        llm=llm,
-        prompt=prompt,
-        tools=tools
-    )
-
-    agent_executor = AgentExecutor(
-        agent=agent, 
+    agent = create_agent(
+        model=model,
+        system_prompt=system_prompt,
         tools=tools,
-        verbose=True,
-        max_iterations=100,
-        handle_parsing_errors=True
+        middleware=middlewares
     )
 
     t = date.today() - timedelta(days=1)
@@ -95,8 +74,8 @@ def main():
         2.你必须将日报以邮件形式发送到系统指定的邮箱。
     """
 
-    agent_executor.invoke({
-        "input": user_input
+    agent.invoke({
+        "messages": [{"role": "user", "content": user_input}]
     })
 
 if __name__ == "__main__":

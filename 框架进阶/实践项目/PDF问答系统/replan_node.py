@@ -30,6 +30,7 @@ _prompt=ChatPromptTemplate.from_messages([
         你输出的计划不应该有任何和答案有关的暗示。
         你输出的计划中不应该包含已经完成的步骤。
         你输出的计划中每个步骤都必须确保这个步骤能够得到所有它需要的信息。
+        你如果没有从向量数据库中找到符合你要求的查询结果，请不要重复查询。
         你输出的计划应该确保最后一个步骤输出的是对用户问题的最终答案。
         计划请以JSON格式输出，包含action字段，action字段应该包含steps字段，steps字段类型List[str]。
         答案请以JSON格式输出，包含action字段，action字段应该包含response字段，response字段类型str。
